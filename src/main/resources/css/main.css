@@ -1,0 +1,49 @@
+.button.pressed { -fx-background-color: ghostwhite; }
+
+.button, .toggle-button {
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 18px 18px;
+    -fx-cursor: pointer;
+}
+
+#snapBtn{
+    -fx-background-image: url(/img/screenshot.png);
+}
+
+#openImageBtn{
+    -fx-background-image: url(/img/add-image.png);
+}
+
+#clearBtn{
+     -fx-background-image: url(/img/clear.png);
+ }
+
+#copyBtn{
+    -fx-background-image: url(/img/copy.png);
+}
+
+#pasteBtn{
+    -fx-background-image: url(/img/paste.png);
+}
+
+#wrapBtn{
+    -fx-background-image: url(/img/wrap.png);
+}
+
+/*#resetBtn{*/
+    /*-fx-background-image: url(/img/reset.png);*/
+/*}*/
+
+/*#segmentBtn{*/
+    /*-fx-background-image: url(/img/segment.png);*/
+/*}*/
+
+/*#topBar .separator{*/
+    /*-fx-padding: 2px -5px 2px -2px;*/
+/*}*/
+
+#ocrTextArea .text {
+    -fx-line-spacing: 0px;
+    -fx-background-color: #ffffff;
+}
