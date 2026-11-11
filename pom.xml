@@ -10,14 +10,32 @@
 
     <properties>
         <soft.version>1.2.0</soft.version>
+        <!-- JDK 17 编译；JavaFX 自 JDK 11 起不再内置，改用 OpenJFX 17 -->
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <javafx.version>17.0.2</javafx.version>
+        <!-- JavaFX 11+ 从 classpath 启动时，Main-Class 不能继承 Application -->
+        <main.class>me.yoqi.qr.Launcher</main.class>
     </properties>
 
     <dependencies>
 <!--        全局快捷键-->
         <dependency>
-            <groupId>com.1stleg</groupId>
+            <groupId>com.github.kwhat</groupId>
             <artifactId>jnativehook</artifactId>
-            <version>2.1.0</version>
+            <version>2.2.2</version>
+        </dependency>
+
+<!--        JavaFX 运行时（JDK 17 已不包含）-->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>${javafx.version}</version>
         </dependency>
 
         <dependency>
@@ -35,7 +53,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -54,22 +72,43 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.13.0</version>
                 <configuration>
+                    <release>${maven.compiler.release}</release>
                     <encoding>UTF-8</encoding>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>${main.class}</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <useUniqueVersions>false</useUniqueVersions>
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.10</version>
+                <version>3.6.1</version>
                 <executions>
                     <execution>
                         <id>copy-dependencies</id>
                         <phase>package</phase>
                         <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <includeScope>runtime</includeScope>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
@@ -80,23 +119,13 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- 替代 JDK 8 时代的 com.zenjava:javafx-maven-plugin，用于 Java 17 下运行 -->
             <plugin>
-                <groupId>com.zenjava</groupId>
+                <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
-                <version>8.8.3</version>
+                <version>0.0.8</version>
                 <configuration>
-                    <mainClass>me.yoqi.qr.MainFm</mainClass>
-                    <bundler>dmg</bundler>
-                    <jfxAppOutputDir>${project.build.directory}/app</jfxAppOutputDir>
-                    <nativeOutputDir>${project.build.directory}/native</nativeOutputDir>
-                    <appName>treehole</appName>
-                    <verbose>true</verbose>
-                    <vendor>com.luooqi</vendor>
-                    <needShortcut>true</needShortcut>
-                    <bundleArguments>
-                        <runtime />
-                    </bundleArguments>
-                    <nativeReleaseVersion>${soft.version}</nativeReleaseVersion>
+                    <mainClass>${main.class}</mainClass>
                 </configuration>
             </plugin>
         </plugins>

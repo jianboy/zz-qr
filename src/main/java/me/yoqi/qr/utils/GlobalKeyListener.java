@@ -4,9 +4,9 @@ import java.lang.reflect.Field;
 
 import me.yoqi.qr.MainFm;
 import me.yoqi.qr.snap.ScreenCapture;
-import org.jnativehook.NativeInputEvent;
-import org.jnativehook.keyboard.NativeKeyEvent;
-import org.jnativehook.keyboard.NativeKeyListener;
+import com.github.kwhat.jnativehook.NativeInputEvent;
+import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
+import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 
 import cn.hutool.log.StaticLog;
 

@@ -15,7 +15,7 @@ import javax.imageio.ImageIO;
 import me.yoqi.qr.utils.QRUtils;
 import me.yoqi.qr.controller.ProcessController;
 import me.yoqi.qr.snap.ScreenCapture;
-import org.jnativehook.GlobalScreen;
+import com.github.kwhat.jnativehook.GlobalScreen;
 
 import me.yoqi.qr.model.StageInfo;
 import me.yoqi.qr.utils.CommUtils;
@@ -120,7 +120,9 @@ public class MainFm extends Application {
 
     @Override
     public void stop() throws Exception {
-        GlobalScreen.unregisterNativeHook();
+        if (GlobalScreen.isNativeHookRegistered()) {
+            GlobalScreen.unregisterNativeHook();
+        }
     }
 
     private void clearText(){
@@ -215,8 +217,9 @@ public class MainFm extends Application {
             GlobalScreen.registerNativeHook();
             GlobalScreen.addNativeKeyListener(new GlobalKeyListener());
         }
-        catch (Exception ex) {
-            ex.printStackTrace();
+        // 缺少 X11 系统库时加载 native 库会抛 LinkageError，此时降级为仅支持界面按钮截图
+        catch (Exception | LinkageError ex) {
+            StaticLog.warn("全局快捷键不可用：{}", ex.toString());
         }
     }
 }

@@ -2,10 +2,10 @@ package me.yoqi.qr.utils;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Taskbar;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -259,18 +259,11 @@ public class CommUtils {
 
     public static void initStage(Stage stage) {
         try {
-            if (CommUtils.IS_MAC_OS) {
+            // com.apple.eawt.Application 在 JDK 9 起已移除，改用标准 Taskbar API 设置 macOS Dock 图标
+            if (CommUtils.IS_MAC_OS && Taskbar.isTaskbarSupported()
+                    && Taskbar.getTaskbar().isSupported(Taskbar.Feature.ICON_IMAGE)) {
                 URL iconURL = MainFm.class.getResource("/img/logo.png");
-                java.awt.Image image = new ImageIcon(iconURL).getImage();
-                Class<?> appleApp = Class.forName("com.apple.eawt.Application");
-                //noinspection unchecked
-                Method getApplication = appleApp.getMethod("getApplication");
-                Object application = getApplication.invoke(appleApp);
-                Class[] params = new Class[1];
-                params[0] = java.awt.Image.class;
-                //noinspection unchecked
-                Method setDockIconImage = appleApp.getMethod("setDockIconImage", params);
-                setDockIconImage.invoke(application, image);
+                Taskbar.getTaskbar().setIconImage(new ImageIcon(iconURL).getImage());
             }
         } catch (Exception e) {
             StaticLog.error(e);
