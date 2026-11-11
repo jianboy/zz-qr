@@ -63,6 +63,7 @@ public class MainFm extends Application {
     private static ScreenCapture screenCapture;
     private static ProcessController processController;
     private static TextArea textArea;
+    private static boolean nativeHookRegistered = false;
     //private static boolean isSegment = true;
     //private static String ocrText = "";
     private static int ocrType=0;
@@ -120,7 +121,7 @@ public class MainFm extends Application {
 
     @Override
     public void stop() throws Exception {
-        if (GlobalScreen.isNativeHookRegistered()) {
+        if (nativeHookRegistered && GlobalScreen.isNativeHookRegistered()) {
             GlobalScreen.unregisterNativeHook();
         }
     }
@@ -216,6 +217,7 @@ public class MainFm extends Application {
             logger.setUseParentHandlers(false);
             GlobalScreen.registerNativeHook();
             GlobalScreen.addNativeKeyListener(new GlobalKeyListener());
+            nativeHookRegistered = true;
         }
         // 缺少 X11 系统库时加载 native 库会抛 LinkageError，此时降级为仅支持界面按钮截图
         catch (Exception | LinkageError ex) {
